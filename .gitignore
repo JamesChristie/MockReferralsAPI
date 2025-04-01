@@ -1,0 +1,13 @@
+# JetBrains Rider Configuration
+*/.idea/*
+
+# VSCode Configuration
+*/.vscode/*
+
+# Generated Build Products
+*/obj/*
+
+# *NIX Temporary Files
+~*
+*.swp
+*.swo

@@ -1,0 +1,6 @@
+@MockReferralsAPI_HostAddress = http://localhost:5159
+
+GET {{MockReferralsAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
