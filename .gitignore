@@ -1,11 +1,12 @@
 # JetBrains Rider Configuration
-*/.idea/*
+.idea
 
 # VSCode Configuration
-*/.vscode/*
+.vscode
 
 # Generated Build Products
 */obj/*
+*/bin/*
 
 # *NIX Temporary Files
 ~*
