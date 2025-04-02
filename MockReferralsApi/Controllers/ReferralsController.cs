@@ -100,6 +100,7 @@ public class ReferralsController(
     [HttpPost("RedeemReferral")]
     [EndpointSummary("Redeem a Referral")]
     [EndpointDescription("Redeems an unclaimed referral for a new user with the given referral code")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType<NoContentResult>(StatusCodes.Status204NoContent)]
     [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<UnauthorizedResult>(StatusCodes.Status401Unauthorized)]
