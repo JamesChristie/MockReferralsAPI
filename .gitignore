@@ -1,5 +1,6 @@
 # JetBrains Rider Configuration
 .idea
+*.DotSettings.user
 
 # VSCode Configuration
 .vscode
