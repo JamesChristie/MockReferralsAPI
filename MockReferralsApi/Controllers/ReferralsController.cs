@@ -10,7 +10,8 @@ namespace MockReferralsAPI.Controllers;
 [ApiController]
 public class ReferralsController(
     ILogger<ReferralsController> logger,
-    IStoreReferralRecords datastore
+    IStoreReferralRecords datastore,
+    IGenerateReferralLinks linkGenerator
 ) : ControllerBase
 {
     [HttpGet]
@@ -40,6 +41,7 @@ public class ReferralsController(
         var response = new UserReferralsResponseDto
         {
             Code = userReferralCode.Code,
+            ShareableLink = linkGenerator.ForReferralCode(userId),
             Referrals = referrals
         };
  
@@ -56,6 +58,7 @@ public class ReferralsController(
         [FromBody] ReferralDto referralDto
     )
     {
+        logger.LogInformation("Received referral creation request for user {ID}", userId);
         UserReferralCode userReferralCode;
 
         try
@@ -70,6 +73,46 @@ public class ReferralsController(
 
         datastore.CreateReferral(userReferralCode.Code, referralDto);
 
+        logger.LogInformation("Successfully created a referral for user {ID}", userId);
+
         return Created();
+    }
+
+    [HttpPost]
+    public ActionResult Redeem(
+        [FromHeader] string userId,
+        [FromBody] RedemptionDto redemptionDto
+    )
+    {
+        logger.LogInformation(
+            "Received redemption request for user {ID} and code {CODE}",
+            userId, redemptionDto.ReferralCode);
+
+        try
+        {
+            datastore.Redeem(userId, redemptionDto.ReferralCode);
+
+            logger.LogInformation(
+                "Successfully redeemed referral for user {ID} and code {CODE}",
+                userId, redemptionDto.ReferralCode);
+
+            return NoContent();
+        }
+        catch (RecordNotFoundException)
+        {
+            logger.LogInformation(
+                "Referral not found for user {ID} and code {CODE}",
+                userId, redemptionDto.ReferralCode);
+
+            return NotFound();
+        }
+        catch (InvalidRedemptionException)
+        {
+            logger.LogInformation(
+                "User {ID} cannot claim their own referral with code {CODE}",
+                userId, redemptionDto.ReferralCode);
+
+            return Unauthorized();
+        }
     }
 }

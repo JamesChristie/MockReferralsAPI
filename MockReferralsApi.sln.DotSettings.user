@@ -4,7 +4,5 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/CreateUnitTestDialog/TestProjectMapping/=5479F8AB_002DE516_002D4840_002DA490_002D4017F26270BE/@EntryIndexedValue">MockReferralsApi.Tests</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/CreateUnitTestDialog/TestTemplateMapping/=NUnit3x/@EntryIndexedValue">db4927dd-2e12-48a7-9a84-2b7e3e31b9c8</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=51819485_002D451e_002D4a52_002Daa9c_002D366557f30a83/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AuthenticatedUser_NoReferrals_CodeWithEmptyList" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::AAEDA950-2FCC-483C-98FE-99DBC99B4911::net9.0::MockReferralsApi.Tests.Controllers.ReferralsControllerTest&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Project Location="/Users/james/RiderProjects/MockReferralsApi/MockReferralsApi.Tests" Presentation="&amp;lt;MockReferralsApi.Tests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -16,6 +16,7 @@ builder.Services.AddDbContext<ReferralsContext>(
 );
 
 builder.Services.AddScoped<IStoreReferralRecords, ReferralsDatastore>();
+builder.Services.AddScoped<IGenerateReferralLinks, ConstantLinkGenerator>();
 
 // Concrete Implementations for Dependency Injection
 // builder.Services.AddScoped<>();

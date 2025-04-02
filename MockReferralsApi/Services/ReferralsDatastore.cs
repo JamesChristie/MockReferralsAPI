@@ -40,4 +40,28 @@ public class ReferralsDatastore(
         referralsContext.Referrals.Add(referral);
         referralsContext.SaveChanges();
     }
+
+    public void Redeem(string userId, string exampleReferralCode)
+    {
+        Referral referral;
+
+        try
+        {
+            referral = referralsContext.Referrals
+                .First(record =>
+                    record.Code == exampleReferralCode
+                    && record.RedeemingUserId == null);
+        }
+        catch (InvalidOperationException invalidOperationException)
+        {
+            throw new RecordNotFoundException(
+                $"No unredeemed referrals found for user ID {userId}",
+                invalidOperationException);
+        }
+
+        referral.RedeemingUserId = userId;
+        referral.Redeemed = true;
+
+        referralsContext.SaveChanges();
+    }
 }
