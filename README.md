@@ -26,23 +26,23 @@ An OpenAPI specification JSON file is generated automatically from controller an
 
 ## Solutions to Problems From Prompt
 
-> How will existing users create new referrals using their existing referral code?
+> How are referrals created?
 
 An HTTP PUT action is provided on the `/referrals` path. It accepts the same DTO that is returned by the index action under the `Referrals` list. There is not currently a path for creating new codes, as that would be a separate resource or process.
 
-> How will the app generate referral links for the Share feature?
+> How are referral links generated?
 
 Referral links are automatically generated using the referral code associated with a user whenever referrals are requested. This link is not currently saved, in the event the url needs to change. This avoids the need to migrate stored records when a simple routing change is made. Older redemption endpoints can be deprecated and made to redirect to the new version where appropriate.
 
-> How will existing users check the status of their referrals?
+> How do users check the current status of created referrals?
 
 The index action will provide a full listing of all created referrals. This potentially introduces a performance issue in the event a dedicate user refers a very large number of people, but that threshold would be quite high and didn't seem appropriate to handle in a simple MVP.
 
-> How will the app know where to direct new users after they install the app via a referral?
+> How does the client handle directing new users during referral redemption?
 
 Referral redemption requires a user id and a code to be completed. This can be done with a single request, and the API does not currently need to provide the client with any additional context. Upon completion of registration via referral deeplink, the client can send a second request to redeem the referral, or this can be done by the registration process via internal backend requests. (This could also be done by having the registration process invoke the relevant service itself, if it is desirable to avoid having backend services call other backend endpoints themselves.)
 
-> Since users may eventually earn rewards for referrals, should we take extra steps to mitigate abuse?
+> What steps have been taken to prevent abuse?
 
 Without knowing more specifics of the process and business concerns around this, I have implemented very simple uniqueness validation for the phone, email, and redeeming user id associated with a referral. This would not be a robust solution for a production system handling redemptions, but it at least establishes a seam for validating against simple, duplicate redemption.
 
@@ -62,10 +62,10 @@ With any software project, the expression of business logic will require some as
 * The database backing EntityFramework models is in-memory. No attempt has been made to formally set primary keys, index for performance, or any other common schema setup. It is not necessary for this MVP, and if this code were to be altered to use a traditional database, fewer details would need to be changed to support this. 
 
 
-* A datastore abstraction and class have been provided to isolate business logic from data operations. This allows easier migration of database backends as well as providing a formal, private API for data operations in the language of the business logic. Additionally, this avoids problems of needing to mock database interactions in unit tests. EntityFramework context and set classes are concrete and do not provide single interfaces to easily mock. Directly calling database operations from a controller is always a complication that should be avoided in controller logic.
+* A datastore abstraction and class have been provided to isolate business logic from data operations. This allows easier migration of database backends as well as providing a formal, private API for data operations in the language of the business logic. Additionally, this avoids problems of needing to mock database interactions in unit tests. EntityFramework context and set classes are concrete and do not provide single interfaces to easily mock. Directly calling database operations from a controller is typically a complication that should be avoided.
 
 
-* The fake referral link defined in constants does not use the url from the mockups to make it slightly harder for future challenge respondents to find this repo via public internet searches.
+* The fake referral link defined in constants does not use the url from the mockups to make it slightly harder for future challenge respondents to find this repo via public internet searches. (The same goes for prompt question text in the above section.)
 
 
 * User IDs are currently passed via request header to align with the typical approach of an auth token in the header being used to fetch a current user from an auth guard in the controller.
