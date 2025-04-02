@@ -1,8 +1,8 @@
 namespace MockReferralsAPI.Dto;
 
-public class UserReferralsResponseDto
+public record UserReferralsResponseDto
 {
-    public required string Code;
-    public required string ShareableLink; 
-    public required List<ReferralDto> Referrals;
+    public required string Code { get; init; }
+    public required string ShareableLink { get; init; }
+    public required List<ReferralDto> Referrals { get; init; }
 }

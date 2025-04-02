@@ -4,10 +4,10 @@ namespace MockReferralsAPI.Dto;
 
 public record ReferralDto
 {
-    public string? Name;
-    public string? Phone;
-    public string? Email;
-    public bool Redeemed;
+    public string? Name { get; init; }
+    public string? Phone { get; init; }
+    public string? Email { get; init; }
+    public bool Redeemed { get; set; }
     
     public ReferralDto() { }
 

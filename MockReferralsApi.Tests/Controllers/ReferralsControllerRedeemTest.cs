@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MockReferralsAPI;
 using MockReferralsAPI.Controllers;
+using MockReferralsAPI.Dto;
 using MockReferralsAPI.Exceptions;
 using MockReferralsAPI.Models;
 using MockReferralsAPI.Services;

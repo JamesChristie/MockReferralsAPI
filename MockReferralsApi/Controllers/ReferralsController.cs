@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using MockReferralsAPI.Dto;
 using MockReferralsAPI.Exceptions;
@@ -6,7 +8,7 @@ using MockReferralsAPI.Services;
 
 namespace MockReferralsAPI.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("/referrals")]
+[Route("/referrals")]
 [ApiController]
 public class ReferralsController(
     ILogger<ReferralsController> logger,
@@ -14,9 +16,16 @@ public class ReferralsController(
     IGenerateReferralLinks linkGenerator
 ) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("GetUserReferralContext")]
+    [EndpointSummary("Referrals Index")]
+    [EndpointDescription("Provides the referral code, shareable referral link, and all referrals for a given user ID")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType<UserReferralsResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
     public ActionResult<UserReferralsResponseDto> Index(
-        [FromHeader] string userId
+        [FromHeader]
+        [Description("ID of a user")]
+        string userId
     )
     {
         logger.LogInformation("Received request for referrals for user {ID}", userId);
@@ -52,10 +61,20 @@ public class ReferralsController(
         return new ActionResult<UserReferralsResponseDto>(response);
     }
 
-    [HttpPut]
+    [HttpPut("PutNewReferral")]
+    [EndpointSummary("Create New Referral")]
+    [EndpointDescription("Creates a new, open referral associated with the referral code of the given user")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType<CreatedResult>(StatusCodes.Status201Created)]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
     public ActionResult Create(
-        [FromHeader] string userId,
-        [FromBody] ReferralDto referralDto
+        [FromHeader]
+        [Description("ID of a user")]
+        string userId,
+
+        [FromBody]
+        [Description("JSON representation of a referral")]
+        ReferralDto referralDto
     )
     {
         logger.LogInformation("Received referral creation request for user {ID}", userId);
@@ -78,10 +97,20 @@ public class ReferralsController(
         return Created();
     }
 
-    [HttpPost]
+    [HttpPost("RedeemReferral")]
+    [EndpointSummary("Redeem a Referral")]
+    [EndpointDescription("Redeems an unclaimed referral for a new user with the given referral code")]
+    [ProducesResponseType<NoContentResult>(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<UnauthorizedResult>(StatusCodes.Status401Unauthorized)]
     public ActionResult Redeem(
-        [FromHeader] string userId,
-        [FromBody] RedemptionDto redemptionDto
+        [FromHeader]
+        [Description("ID of a user")]
+        string userId,
+
+        [FromBody]
+        [Description("JSON representation of a redemption request, including referral code")]
+        RedemptionDto redemptionDto
     )
     {
         logger.LogInformation(
@@ -100,7 +129,7 @@ public class ReferralsController(
         }
         catch (RecordNotFoundException)
         {
-            logger.LogInformation(
+            logger.LogError(
                 "Referral not found for user {ID} and code {CODE}",
                 userId, redemptionDto.ReferralCode);
 
@@ -108,7 +137,7 @@ public class ReferralsController(
         }
         catch (InvalidRedemptionException)
         {
-            logger.LogInformation(
+            logger.LogError(
                 "User {ID} cannot claim their own referral with code {CODE}",
                 userId, redemptionDto.ReferralCode);
 

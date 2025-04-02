@@ -5,6 +5,6 @@ namespace MockReferralsAPI.Models;
 [Index(nameof(UserId), IsUnique = true)]
 public class UserReferralCode
 {
-    public string UserId;
-    public string Code;
+    public required string UserId;
+    public required string Code;
 }
