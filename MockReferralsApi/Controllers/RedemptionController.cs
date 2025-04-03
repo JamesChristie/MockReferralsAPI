@@ -7,27 +7,29 @@ using MockReferralsAPI.Services;
 
 namespace MockReferralsAPI.Controllers;
 
-[Route("/referrals/redeem")]
+[Route("/redeem")]
 [ApiController]
 public class RedemptionController(
     ILogger<ReferralsController> logger,
     IStoreReferralRecords datastore
 ) : ControllerBase
 {
-    [HttpGet("RedirectToAppStore")]
+    [HttpGet]
     [EndpointSummary("Redirect to App Store")]
     [EndpointDescription("Redirects to the app on the app store from a referral link")]
     [ProducesResponseType<RedirectResult>(StatusCodes.Status302Found)]
     public RedirectResult FromLink(
         [FromQuery]
-        [Description("Referral code")]
-        string referralCode,
+        [Description("ID of a referral")]
+        string? referralId,
 
         [FromQuery]
-        [Description("ID of a referral")]
-        string? referralId
+        [Description("Referral code")]
+        string referralCode
     )
     {
+        logger.LogInformation(
+            "Received request for ");
         // NOTE (jchristie@8thlight.com) To fully implement a deferred deep
         // link, this would require responding with an HTML document with
         // attached javascript behavior to add the deep link to the
@@ -35,7 +37,7 @@ public class RedemptionController(
         return Redirect(Constants.AppLink);
     }
 
-    [HttpPost("RedeemReferral")]
+    [HttpPost("redeem")]
     [EndpointSummary("Redeem a Referral")]
     [EndpointDescription("Redeems an unclaimed referral for a new user with the given referral code")]
     [Consumes(MediaTypeNames.Application.Json)]

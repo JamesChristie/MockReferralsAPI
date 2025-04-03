@@ -16,7 +16,7 @@ public class ReferralsController(
     IGenerateReferralLinks linkGenerator
 ) : ControllerBase
 {
-    [HttpGet("GetUserReferralContext")]
+    [HttpGet]
     [EndpointSummary("Referrals Index")]
     [EndpointDescription("Provides the referral code, shareable referral link, and all referrals for a given user ID")]
     [Produces(MediaTypeNames.Application.Json)]
@@ -44,13 +44,15 @@ public class ReferralsController(
 
         var referrals = datastore
             .GetReferralsForCode(userReferralCode.Code)
-            .Select(refCode => new ReferralDto(refCode))
+            .Select(referral => new ReferralDto(referral)
+            {
+                ShareableLink = linkGenerator.ForReferral(referral)
+            })
             .ToList();
 
         var response = new UserReferralsResponseDto
         {
             Code = userReferralCode.Code,
-            ShareableLink = linkGenerator.ForReferralCode(userId),
             Referrals = referrals
         };
  
@@ -61,7 +63,7 @@ public class ReferralsController(
         return new ActionResult<UserReferralsResponseDto>(response);
     }
 
-    [HttpPut("PutNewReferral")]
+    [HttpPut]
     [EndpointSummary("Create New Referral")]
     [EndpointDescription("Creates a new, open referral associated with the referral code of the given user")]
     [Consumes(MediaTypeNames.Application.Json)]

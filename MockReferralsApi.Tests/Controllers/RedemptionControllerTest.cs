@@ -43,7 +43,7 @@ public class RedemptionControllerTest
     {
         // Exercise Method
         var response = _redemptionController
-            .FromLink(Constants.ReferralId, Constants.ReferralCode);
+            .FromLink(Constants.PendingReferralId, Constants.ReferralCode);
 
         // Verify
         Assert.That(response, Is.TypeOf<RedirectResult>());

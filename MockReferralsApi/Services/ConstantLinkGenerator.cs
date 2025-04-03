@@ -1,9 +1,13 @@
+using MockReferralsAPI.Models;
+
 namespace MockReferralsAPI.Services;
 
 public class ConstantLinkGenerator : IGenerateReferralLinks
 {
-    public string ForReferralCode(string referralCode)
+    public string ForReferral(Referral referral)
     {
-        return string.Format(Constants.LinkTemplate, referralCode);
+        return referral.Redeemed
+            ? string.Empty
+            : string.Format(Constants.LinkTemplate, referral.Id, referral.Code);
     }
 }

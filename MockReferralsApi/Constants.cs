@@ -11,11 +11,12 @@ public static class Constants
     // unique, human-readable text that clearly differentiates each value
     // to assist with orienting yourself in a debugger frame. Clear,
     // unique values make it easier to trace back to the source of a value.
-    public const string ReferralCode = "example-referral-code";
-    public const string LinkTemplate = "https://example.com/referrals/redeem?code={0}";
+    public const string LinkTemplate = "https://example.com/{0}?referral_code={1}";
     public const string AppLink = "https://example.com/appstore/app-id";
 
-    public const string ReferralId = "referral-id";
+    public const string PendingReferralId = "pending-referral-id";
+    public const string RedeemedReferralId = "redeemed-referral-id";
+    public const string ReferralCode = "example-referral-code";
     public const string UserIdNoReferrals = "user-id-without-referrals";
     public const string UserIdWithReferrals = "user-id-with-referrals";
     public const string UserIdWithoutCode = "user-id-without-code";
@@ -23,6 +24,7 @@ public static class Constants
 
     public static readonly Referral PendingReferral = new()
     {
+        Id = PendingReferralId,
         Code = ReferralCode,
         Name = "Pending User",
         Email = "pending.user@example.com",
@@ -32,6 +34,7 @@ public static class Constants
 
     public static readonly Referral RedeemedReferral = new()
     {
+        Id = RedeemedReferralId,
         Code = ReferralCode,
         Name = "Redeemed User",
         Email = "redeemed.user@example.com",

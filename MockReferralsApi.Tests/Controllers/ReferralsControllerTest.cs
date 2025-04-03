@@ -18,7 +18,7 @@ public class ReferralsControllerTest
 {
     // Fixed Values
     private readonly string _mockShareableLink = string.Format(
-        Constants.LinkTemplate, Constants.ReferralCode);
+        Constants.LinkTemplate, Constants.PendingReferral, Constants.ReferralCode);
 
     // Mocks
     private Mock<ILogger<ReferralsController>> _mockLogger;
@@ -65,10 +65,6 @@ public class ReferralsControllerTest
             .Setup(store => store.GetReferralsForCode(Constants.ReferralCode))
             .Returns([]);
 
-        _mockLinkGenerator
-            .Setup(generator => generator.ForReferralCode(Constants.UserIdNoReferrals))
-            .Returns(_mockShareableLink);
-
         // Exercise Method
         var response = _referralsController.Index(Constants.UserIdNoReferrals);
 
@@ -80,10 +76,6 @@ public class ReferralsControllerTest
         Assert.That(referralsResponse.Code,
                     Is.EqualTo(Constants.ReferralCode),
                     "Referral code should equal the expected code");
-
-        Assert.That(referralsResponse.ShareableLink,
-                    Is.EqualTo(_mockShareableLink),
-                    "Shareable link should equal the expected link");
 
         Assert.That(referralsResponse.Referrals,
                     Is.Empty,
@@ -120,8 +112,12 @@ public class ReferralsControllerTest
             .Returns(referralRecords);
 
         _mockLinkGenerator
-            .Setup(generator => generator.ForReferralCode(Constants.UserIdWithReferrals))
+            .Setup(generator => generator.ForReferral(Constants.PendingReferral))
             .Returns(_mockShareableLink);
+
+        _mockLinkGenerator
+            .Setup(generator => generator.ForReferral(Constants.RedeemedReferral))
+            .Returns("");
 
         // Exercise Method
         var response = _referralsController.Index(Constants.UserIdWithReferrals);
@@ -135,10 +131,6 @@ public class ReferralsControllerTest
                     Is.EqualTo(Constants.ReferralCode),
                     "Referral code should equal the expected code");
 
-        Assert.That(referralsResponse.ShareableLink,
-                    Is.EqualTo(_mockShareableLink),
-                    "Shareable link should equal the expected link");
-
         Assert.That(referralsResponse.Referrals.Count,
                     Is.EqualTo(2),
                     "Referrals list should contain two elements");
@@ -146,8 +138,14 @@ public class ReferralsControllerTest
         var firstReferral = referralsResponse.Referrals[0];
         var secondReferral = referralsResponse.Referrals[1];
 
-        var firstExpectedReferral = new ReferralDto(Constants.PendingReferral);
-        var secondExpectedReferral = new ReferralDto(Constants.RedeemedReferral);
+        var firstExpectedReferral = new ReferralDto(Constants.PendingReferral)
+        {
+            ShareableLink = _mockShareableLink
+        };
+        var secondExpectedReferral = new ReferralDto(Constants.RedeemedReferral)
+        {
+            ShareableLink = ""
+        };
 
         // Equality is provided via the `record` keyword on the DTO class
         Assert.That(firstReferral, Is.EqualTo(firstExpectedReferral));

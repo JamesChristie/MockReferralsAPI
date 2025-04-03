@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using MockReferralsAPI.Dto;
 
@@ -8,6 +9,9 @@ namespace MockReferralsAPI.Models;
 [Index(nameof(RedeemingUserId), IsUnique = true)]
 public class Referral
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string? Id;
+
     public required string Code;
     public string? Name;
     public string? Phone;
