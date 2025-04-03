@@ -38,7 +38,7 @@ public class RedemptionController(
         return Redirect(Constants.AppLink);
     }
 
-    [HttpPost("redeem")]
+    [HttpPost]
     [EndpointSummary("Redeem a Referral")]
     [EndpointDescription("Redeems an unclaimed referral for a new user with the given referral code")]
     [Consumes(MediaTypeNames.Application.Json)]
