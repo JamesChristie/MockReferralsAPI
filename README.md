@@ -42,6 +42,8 @@ The index action will provide a full listing of all created referrals. This pote
 
 The redemption controller implements an endpoint to redirect to the app store. In the current form, this is a simple redirect. In the final version of this API, this would include a small HTML document with associated JavaScript to ensure that the deferred deep link is placed into the clipboard for later extraction by the app, once installed. 
 
+The redirection endpoint only ever replies with a 302, regardless of whether the parameters provided are valid. Tihs was done as directing new users to the app is likely preferable to presenting them with an error before they've even entered the flow.
+
 > What steps have been taken to prevent abuse?
 
 Referrals are redeemed with a combination of their id and the referral code. This currently prohibits redemption via code only, which may be undesirable. As a deferred deep link requires placing load bearing data into the clipboard, this process could be interrupted after the initial opening of the referral link. If this occurs, the user can simply re-open the original link after the app is installed.
