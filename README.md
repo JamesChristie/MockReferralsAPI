@@ -40,9 +40,13 @@ The index action will provide a full listing of all created referrals. This pote
 
 > How does the client handle directing new users during referral redemption?
 
-Referral redemption requires a user id and a code to be completed. This can be done with a single request, and the API does not currently need to provide the client with any additional context. Upon completion of registration via referral deeplink, the client can send a second request to redeem the referral, or this can be done by the registration process via internal backend requests. (This could also be done by having the registration process invoke the relevant service itself, if it is desirable to avoid having backend services call other backend endpoints themselves.)
+The redemption controller implements an endpoint to redirect to the app store. In the current form, this is a simple redirect. In the final version of this API, this would include a small HTML document with associated JavaScript to ensure that the deferred deep link is placed into the clipboard for later extraction by the app, once installed. 
 
 > What steps have been taken to prevent abuse?
+
+Referrals are redeemed with a combination of their id and the referral code. This currently prohibits redemption via code only, which may be undesirable. As a deferred deep link requires placing load bearing data into the clipboard, this process could be interrupted after the initial opening of the referral link. If this occurs, the user can simply re-open the original link after the app is installed.
+
+The combination of id and code is used to ensure that the correct, specific redemption record is updated. Redemption via code only could result in duplicate referrals from the perspective of the referring user. If this is an acceptable outcome, then referral via code only can be added as a case to the redemption controller, and the id param made optional. A new referral record would then be created and redeemed.
 
 Without knowing more specifics of the process and business concerns around this, I have implemented very simple uniqueness validation for the phone, email, and redeeming user id associated with a referral. This would not be a robust solution for a production system handling redemptions, but it at least establishes a seam for validating against simple, duplicate redemption.
 
