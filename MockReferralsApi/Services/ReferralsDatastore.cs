@@ -41,7 +41,7 @@ public class ReferralsDatastore(
         referralsContext.SaveChanges();
     }
 
-    public void Redeem(string userId, string exampleReferralCode)
+    public void Redeem(string userId, string referralId, string exampleReferralCode)
     {
         Referral referral;
 
@@ -49,7 +49,8 @@ public class ReferralsDatastore(
         {
             referral = referralsContext.Referrals
                 .First(record =>
-                    record.Code == exampleReferralCode
+                    record.Id == referralId
+                    && record.Code == exampleReferralCode
                     && record.RedeemingUserId == null);
         }
         catch (InvalidOperationException invalidOperationException)

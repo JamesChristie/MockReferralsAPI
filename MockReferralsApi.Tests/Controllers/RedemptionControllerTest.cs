@@ -61,6 +61,7 @@ public class RedemptionControllerTest
         // Fixed Values
         var redemptionDto = new RedemptionDto
         {
+            ReferralId = Constants.PendingReferralId,
             ReferralCode = Constants.ReferralCode
         };
 
@@ -72,12 +73,49 @@ public class RedemptionControllerTest
         Assert.That(response, Is.TypeOf<NoContentResult>());
         
         _mockDatastore
-            .Verify(store => store.Redeem(Constants.NewUserId, Constants.ReferralCode));
+            .Verify(store =>
+                store.Redeem(
+                    Constants.NewUserId,
+                    Constants.PendingReferralId,
+                    Constants.ReferralCode));
     }
 
     [
         Test(
-            Description = "Given a request from anew user with an invalid code, " +
+            Description = "Given a request from a new user with an invalid referral id" +
+                          "it responds with HTTP 404"
+        )
+    ]
+    public void NewUserWithInvalidReferralId_NotFound()
+    {
+        // Fixed Values
+        const string invalidReferralId = "invalid-referral-id";
+        var redemptionDto = new RedemptionDto
+        {
+            ReferralId = invalidReferralId,
+            ReferralCode = Constants.ReferralCode
+        };
+
+        // Prepare Datastore Mock
+        _mockDatastore
+            .Setup(store =>
+                store.Redeem(
+                    Constants.NewUserId,
+                    invalidReferralId,
+                    Constants.ReferralCode))
+            .Throws(new RecordNotFoundException("mock-message"));
+
+        // Exercise Method
+        var response = _redemptionController
+            .Redeem(Constants.NewUserId, redemptionDto);
+
+        // Validate
+        Assert.That(response, Is.TypeOf<NotFoundResult>());
+    }
+
+    [
+        Test(
+            Description = "Given a request from a new user with an invalid code, " +
                           "it responds with HTTP 404"
         )
     ]
@@ -87,12 +125,17 @@ public class RedemptionControllerTest
         const string invalidCode = "invalid-referral-code";
         var redemptionDto = new RedemptionDto
         {
+            ReferralId = Constants.PendingReferralId,
             ReferralCode = invalidCode
         };
-        
+
         // Prepare Datastore Mock
         _mockDatastore
-            .Setup(store => store.Redeem(Constants.NewUserId, invalidCode))
+            .Setup(store =>
+                store.Redeem(
+                    Constants.NewUserId,
+                    Constants.PendingReferralId,
+                    invalidCode))
             .Throws(new RecordNotFoundException("mock-message"));
 
         // Exercise Method
@@ -114,13 +157,17 @@ public class RedemptionControllerTest
         // Fixed Values
         var redemptionDto = new RedemptionDto
         {
+            ReferralId = Constants.PendingReferralId,
             ReferralCode = Constants.ReferralCode
         };
 
         // Prepare Datastore Mock
         _mockDatastore
             .Setup(store =>
-                store.Redeem(Constants.UserIdWithReferrals, Constants.ReferralCode))
+                store.Redeem(
+                    Constants.UserIdWithReferrals,
+                    Constants.PendingReferralId,
+                    Constants.ReferralCode))
             .Throws(new InvalidRedemptionException("mock-message"));
         
         // Exercise Method

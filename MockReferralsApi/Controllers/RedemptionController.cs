@@ -60,7 +60,8 @@ public class RedemptionController(
 
         try
         {
-            datastore.Redeem(userId, redemptionDto.ReferralCode);
+            datastore.Redeem(
+                userId, redemptionDto.ReferralId, redemptionDto.ReferralCode);
 
             logger.LogInformation(
                 "Successfully redeemed referral for user {ID} and code {CODE}",
@@ -71,7 +72,7 @@ public class RedemptionController(
         catch (RecordNotFoundException)
         {
             logger.LogError(
-                "Referral not found for user {ID} and code {CODE}",
+                "Referral not found for referral {ID} and code {CODE}",
                 userId, redemptionDto.ReferralCode);
 
             return NotFound();
