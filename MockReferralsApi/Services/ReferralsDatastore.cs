@@ -41,7 +41,7 @@ public class ReferralsDatastore(
         referralsContext.SaveChanges();
     }
 
-    public void Redeem(string userId, string referralId, string exampleReferralCode)
+    public void Redeem(string userId, string referralId, string referralCode)
     {
         Referral referral;
 
@@ -50,7 +50,7 @@ public class ReferralsDatastore(
             referral = referralsContext.Referrals
                 .First(record =>
                     record.Id == referralId
-                    && record.Code == exampleReferralCode
+                    && record.Code == referralCode
                     && record.RedeemingUserId == null);
         }
         catch (InvalidOperationException invalidOperationException)
@@ -58,6 +58,26 @@ public class ReferralsDatastore(
             throw new RecordNotFoundException(
                 $"No unredeemed referrals found for user ID {userId}",
                 invalidOperationException);
+        }
+
+        UserReferralCode userReferralCode;
+
+        try
+        {
+            userReferralCode = referralsContext.ReferralCodes
+                .First(record => record.Code == referralCode);
+        }
+        catch (InvalidOperationException invalidOperationException)
+        {
+            throw new RecordNotFoundException(
+                $"No user referral codes found for code {referralCode}",
+                invalidOperationException);
+        }
+
+        if (userReferralCode.UserId == userId)
+        {
+            throw new InvalidRedemptionException(
+                $"User {userId} tried to redeem their referral with ID {referralCode}");
         }
 
         referral.RedeemingUserId = userId;
