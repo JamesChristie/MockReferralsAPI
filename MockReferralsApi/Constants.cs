@@ -13,8 +13,11 @@ public static class Constants
     // unique values make it easier to trace back to the source of a value.
     public const string ReferralCode = "example-referral-code";
     public const string LinkTemplate = "https://example.com/referrals/redeem?code={0}";
-    public const string UserIdNoReferrals = "used-id-without-referrals";
-    public const string UserIdWithReferrals = "used-id-with-referrals";
+    public const string AppLink = "https://example.com/appstore/app-id";
+
+    public const string ReferralId = "referral-id";
+    public const string UserIdNoReferrals = "user-id-without-referrals";
+    public const string UserIdWithReferrals = "user-id-with-referrals";
     public const string UserIdWithoutCode = "user-id-without-code";
     public const string NewUserId = "new-user-id";
 

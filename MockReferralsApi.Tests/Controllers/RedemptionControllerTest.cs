@@ -4,7 +4,6 @@ using MockReferralsAPI;
 using MockReferralsAPI.Controllers;
 using MockReferralsAPI.Dto;
 using MockReferralsAPI.Exceptions;
-using MockReferralsAPI.Models;
 using MockReferralsAPI.Services;
 using Moq;
 using NUnit.Framework;
@@ -12,16 +11,15 @@ using NUnit.Framework;
 namespace MockReferralsApi.Tests.Controllers;
 
 [TestFixture]
-[TestOf(typeof(ReferralsController))]
-public class ReferralsControllerRedeemTest
+[TestOf(typeof(RedemptionController))]
+public class RedemptionControllerTest
 {
     // Mocks
     private Mock<ILogger<ReferralsController>> _mockLogger;
     private Mock<IStoreReferralRecords> _mockDatastore;
-    private Mock<IGenerateReferralLinks> _mockLinkGenerator;
 
     // Subject
-    private ReferralsController _referralsController;
+    private RedemptionController _redemptionController;
 
     [SetUp]
     public void SetUp()
@@ -29,11 +27,27 @@ public class ReferralsControllerRedeemTest
         // Set Up Mocks
         _mockLogger = new Mock<ILogger<ReferralsController>>();
         _mockDatastore = new Mock<IStoreReferralRecords>();
-        _mockLinkGenerator = new Mock<IGenerateReferralLinks>();
 
         // Create Test Subject
-        _referralsController = new ReferralsController(
-            _mockLogger.Object, _mockDatastore.Object, _mockLinkGenerator.Object);
+        _redemptionController = new RedemptionController(
+            _mockLogger.Object, _mockDatastore.Object);
+    }
+
+    [
+        Test(
+            Description = "Given a request for an existing referral, " +
+                          "it redirects to the app store"
+        )
+    ]
+    public void RedemptionLink_Redirects()
+    {
+        // Exercise Method
+        var response = _redemptionController
+            .FromLink(Constants.ReferralId, Constants.ReferralCode);
+
+        // Verify
+        Assert.That(response, Is.TypeOf<RedirectResult>());
+        Assert.That(response.Url, Is.EqualTo(Constants.AppLink));
     }
 
     [
@@ -51,7 +65,7 @@ public class ReferralsControllerRedeemTest
         };
 
         // Exercise Method
-        var response = _referralsController
+        var response = _redemptionController
             .Redeem(Constants.NewUserId, redemptionDto);
         
         // Validate
@@ -82,7 +96,7 @@ public class ReferralsControllerRedeemTest
             .Throws(new RecordNotFoundException("mock-message"));
 
         // Exercise Method
-        var response = _referralsController
+        var response = _redemptionController
             .Redeem(Constants.NewUserId, redemptionDto);
         
         // Validate
@@ -110,7 +124,7 @@ public class ReferralsControllerRedeemTest
             .Throws(new InvalidRedemptionException("mock-message"));
         
         // Exercise Method
-        var response = _referralsController
+        var response = _redemptionController
             .Redeem(Constants.UserIdWithReferrals, redemptionDto);
         
         // Validate
