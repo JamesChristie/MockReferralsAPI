@@ -29,7 +29,8 @@ public class RedemptionController(
     )
     {
         logger.LogInformation(
-            "Received request for ");
+            "Received request for ID {ID} and {CODE}",
+            referralId, referralCode);
         // NOTE (jchristie@8thlight.com) To fully implement a deferred deep
         // link, this would require responding with an HTML document with
         // attached javascript behavior to add the deep link to the
